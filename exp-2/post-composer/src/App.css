@@ -1,66 +1,126 @@
 body {
-  background: #f2f2f2;
-  font-family: Arial;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f6f9;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .container {
-  width: 600px;
-  margin: 30px auto;
-  background: white;
-  padding: 20px;
+  width: 650px;
+  max-width: 90%;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 25px;
   border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 h1 {
   text-align: center;
+  color: #333;
 }
 
-select,
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
 textarea {
   width: 100%;
   padding: 10px;
-  margin-top: 10px;
-}
-
-textarea {
-  resize: none;
-}
-
-button {
-  margin-top: 10px;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
-  background: royalblue;
-  color: white;
+  font-size: 16px;
+  resize: vertical;
   border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
-button:disabled {
-  background: gray;
+h3 {
+  margin-top: 15px;
 }
 
 .success {
   color: green;
+  font-weight: bold;
 }
 
 .error {
   color: red;
+  font-weight: bold;
 }
 
-.post {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin-top: 15px;
-  border-radius: 8px;
-  background: #fafafa;
-}
-
-.edit {
-  background: orange;
+button {
+  padding: 10px 18px;
+  margin-top: 10px;
   margin-right: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  font-size: 15px;
 }
 
-.delete {
-  background: crimson;
+button:not(.edit-btn):not(.delete-btn) {
+  background-color: #007bff;
+}
+
+button:not(.edit-btn):not(.delete-btn):hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+.post-card {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.post-card h3 {
+  margin: 0;
+  color: #007bff;
+}
+
+.post-card p {
+  margin: 10px 0;
+  white-space: pre-wrap;
+}
+
+.btn-group {
+  margin-top: 10px;
+}
+
+.edit-btn {
+  background-color: orange;
+}
+
+.edit-btn:hover {
+  background-color: darkorange;
+}
+
+.delete-btn {
+  background-color: crimson;
+}
+
+.delete-btn:hover {
+  background-color: darkred;
+}
+
+hr {
+  margin: 30px 0;
 }

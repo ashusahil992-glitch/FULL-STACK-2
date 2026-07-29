@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { addPost, updatePost, deletePost } from "./features/posts/postSlice";
 import "./App.css";
 
 function App() {
@@ -9,25 +11,38 @@ function App() {
     Instagram: 2200,
   };
 
+  const dispatch = useDispatch();
+  const posts = useSelector((state) => state.posts.posts);
+
   const [platform, setPlatform] = useState("Twitter");
   const [post, setPost] = useState("");
-  const [posts, setPosts] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
 
   const limit = limits[platform];
   const remaining = limit - post.length;
 
   const handlePublish = () => {
+    if (post.trim() === "" || remaining < 0) return;
+
+    const newPost = {
+      platform,
+      text: post,
+    };
+
     if (editIndex !== null) {
-      const updatedPosts = [...posts];
-      updatedPosts[editIndex] = { platform, text: post };
-      setPosts(updatedPosts);
+      dispatch(
+        updatePost({
+          index: editIndex,
+          post: newPost,
+        })
+      );
       setEditIndex(null);
     } else {
-      setPosts([...posts, { platform, text: post }]);
+      dispatch(addPost(newPost));
     }
 
     setPost("");
+    setPlatform("Twitter");
   };
 
   const handleEdit = (index) => {
@@ -37,12 +52,12 @@ function App() {
   };
 
   const handleDelete = (index) => {
-    const updatedPosts = posts.filter((_, i) => i !== index);
-    setPosts(updatedPosts);
+    dispatch(deletePost(index));
 
     if (editIndex === index) {
       setEditIndex(null);
       setPost("");
+      setPlatform("Twitter");
     }
   };
 
@@ -50,7 +65,7 @@ function App() {
     <div className="container">
       <h1>Dynamic Post Composer</h1>
 
-      <label><b>Select Platform</b></label>
+      <label>Select Platform</label>
 
       <select
         value={platform}
@@ -62,7 +77,7 @@ function App() {
       </select>
 
       <textarea
-        rows="6"
+        rows="7"
         placeholder="Write your post..."
         value={post}
         onChange={(e) => setPost(e.target.value)}
@@ -81,8 +96,8 @@ function App() {
       )}
 
       <button
-        disabled={remaining < 0 || post.trim() === ""}
         onClick={handlePublish}
+        disabled={post.trim() === "" || remaining < 0}
       >
         {editIndex !== null ? "Update Post" : "Publish"}
       </button>
@@ -95,24 +110,26 @@ function App() {
         <p>No posts published yet.</p>
       ) : (
         posts.map((item, index) => (
-          <div className="post" key={index}>
+          <div className="post-card" key={index}>
             <h3>{item.platform}</h3>
 
             <p>{item.text}</p>
 
-            <button
-              className="edit"
-              onClick={() => handleEdit(index)}
-            >
-              Edit
-            </button>
+            <div className="btn-group">
+              <button
+                className="edit-btn"
+                onClick={() => handleEdit(index)}
+              >
+                Edit
+              </button>
 
-            <button
-              className="delete"
-              onClick={() => handleDelete(index)}
-            >
-              Delete
-            </button>
+              <button
+                className="delete-btn"
+                onClick={() => handleDelete(index)}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))
       )}
