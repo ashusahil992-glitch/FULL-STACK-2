@@ -1,9 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addPost, updatePost, deletePost } from "./features/posts/postSlice";
+
+import {
+  selectAllPosts,
+  selectTotalPosts,
+  selectTwitterPosts,
+  selectFacebookPosts,
+  selectLinkedInPosts,
+  selectInstagramPosts,
+} from "./features/posts/selectors";
+
+import PostCard from "./components/PostCard";
 import "./App.css";
 
 function App() {
+  const dispatch = useDispatch();
+
+  // Memoized Selectors
+  const posts = useSelector(selectAllPosts);
+  const totalPosts = useSelector(selectTotalPosts);
+  const twitterPosts = useSelector(selectTwitterPosts);
+  const facebookPosts = useSelector(selectFacebookPosts);
+  const linkedInPosts = useSelector(selectLinkedInPosts);
+  const instagramPosts = useSelector(selectInstagramPosts);
+
   const limits = {
     Twitter: 280,
     Facebook: 5000,
@@ -11,15 +32,17 @@ function App() {
     Instagram: 2200,
   };
 
-  const dispatch = useDispatch();
-  const posts = useSelector((state) => state.posts.posts);
-
   const [platform, setPlatform] = useState("Twitter");
   const [post, setPost] = useState("");
   const [editIndex, setEditIndex] = useState(null);
 
   const limit = limits[platform];
   const remaining = limit - post.length;
+
+  // useMemo to avoid unnecessary recalculation
+  const sortedPosts = useMemo(() => {
+    return [...posts].reverse();
+  }, [posts]);
 
   const handlePublish = () => {
     if (post.trim() === "" || remaining < 0) return;
@@ -104,37 +127,32 @@ function App() {
 
       <hr />
 
+      <h2>Derived State (Memoized Selectors)</h2>
+
+      <p><strong>Total Posts:</strong> {totalPosts}</p>
+      <p><strong>Twitter:</strong> {twitterPosts.length}</p>
+      <p><strong>Facebook:</strong> {facebookPosts.length}</p>
+      <p><strong>LinkedIn:</strong> {linkedInPosts.length}</p>
+      <p><strong>Instagram:</strong> {instagramPosts.length}</p>
+
+      <hr />
+
       <h2>Published Posts</h2>
 
-      {posts.length === 0 ? (
+      {sortedPosts.length === 0 ? (
         <p>No posts published yet.</p>
       ) : (
-        posts.map((item, index) => (
-          <div className="post-card" key={index}>
-            <h3>{item.platform}</h3>
-
-            <p>{item.text}</p>
-
-            <div className="btn-group">
-              <button
-                className="edit-btn"
-                onClick={() => handleEdit(index)}
-              >
-                Edit
-              </button>
-
-              <button
-                className="delete-btn"
-                onClick={() => handleDelete(index)}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
+        sortedPosts.map((item, index) => (
+          <PostCard
+            key={index}
+            post={item}
+            index={index}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
         ))
       )}
     </div>
   );
 }
-
 export default App;
